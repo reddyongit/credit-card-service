@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreditCardRequestDto {
+public class CreditCardRequestDto implements Serializable {
 
     @NotEmpty(message = "Card Name shouldn't be empty")
     @Schema(required = true)
