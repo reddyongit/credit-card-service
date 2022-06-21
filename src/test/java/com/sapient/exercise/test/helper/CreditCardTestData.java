@@ -19,6 +19,15 @@ public class CreditCardTestData {
                 .build();
     }
 
+    public static CreditCardRequestDto aInvalidCreditCardRequestDto() {
+
+        return CreditCardRequestDto.builder()
+                .cardName("Reddeppa")
+                .cardNumber("79927398713111")
+                .limitAmount(1200)
+                .build();
+    }
+
     public static CreditCardEntity aCreditCardEntity() {
         return CreditCardEntity.builder()
                 .id(1)

@@ -40,17 +40,19 @@ public class CreditCardServiceImpl implements CreditCardService {
      */
     @Override
     @Transactional(readOnly = false)
-    public void saveCreditCardDetails(CreditCardRequestDto requestDto) {
+    public void saveCreditCardDetails(CreditCardRequestDto requestDto) throws CreditCardException {
 
+        log.debug("In CreditCardServiceImpl for persisting card details {}", requestDto.getCardNumber());
         // Check whether the duplicate credit card details are requested in request payload by checking it in db
         CreditCardEntity requestEntity = creditCardRepository.findByCardNumber(requestDto.getCardNumber());
 
         if (requestEntity == null) {
+            log.info("Requested card number is not present in db, so adding it");
             //If not exists then save the details by using model mapper from dto to entity
             CreditCardEntity entity = modelMapper.map(requestDto, CreditCardEntity.class);
             CreditCardEntity retEntity = creditCardRepository.save(entity);
         } else {
-            // If exist then don't return any response and log an error message
+            // If exist then throw exception
             log.error("Same Card details already present, so not adding as per Idempotency check");
             throw new CreditCardException("Duplicate card details provided");
         }
@@ -66,6 +68,7 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Transactional(readOnly = true)
     public List<CreditCardResponseDto> getAllCreditCardDetails() {
 
+        log.debug("Retrieving all card details from db");
         return creditCardRepository.findAll()
                 .stream()
                 .map((CreditCardEntity entity) -> modelMapper.map(entity, CreditCardResponseDto.class))
